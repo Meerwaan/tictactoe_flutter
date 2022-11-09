@@ -13,6 +13,8 @@ class _GameScreenState extends State<GameScreen> {
   bool oTurn = true;
   List<String> displayXO = ["", "", "", "", "", "", "", "", ""];
 
+  String resutDec = '';
+
   static var customFontWhite = GoogleFonts.coiny(
       textStyle: TextStyle(
     color: MainColor.fontColor,
@@ -59,7 +61,7 @@ class _GameScreenState extends State<GameScreen> {
                   );
                 }),
           ),
-          Expanded(flex: 2, child: Text('Chrono'))
+          Expanded(flex: 2, child: Text(resutDec, style: customFontWhite,))
         ]),
       ),
     );
@@ -69,11 +71,80 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       if (oTurn && displayXO[index] == '') {
         displayXO[index] = 'O';
-      } else {
+      } else if (!oTurn && displayXO[index] == '') {
         displayXO[index] = 'X';
       }
 
       oTurn = !oTurn;
+      _checkWin();
     });
+  }
+
+  void _checkWin() {
+    //check de la  ligne 1
+    if (displayXO[0] == displayXO[1] &&
+        displayXO[0] == displayXO[2] &&
+        displayXO[0] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+      });
+    }
+    //check de la  ligne 2
+    if (displayXO[3] == displayXO[4] &&
+        displayXO[3] == displayXO[5] &&
+        displayXO[3] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[3] + ' a gagné';
+      });
+    }
+  
+    //check de la  ligne 3
+    if (displayXO[6] == displayXO[7] &&
+        displayXO[6] == displayXO[8] &&
+        displayXO[6] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+      });
+    }
+    //check de la  colonne 1
+    if (displayXO[0] == displayXO[3] &&
+        displayXO[0] == displayXO[6] &&
+        displayXO[0] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+      });
+    }
+    //check de la  colonne 2
+    if (displayXO[1] == displayXO[4] &&
+        displayXO[1] == displayXO[7] &&
+        displayXO[1] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[1] + ' a gagné';
+      });
+    }
+    //check de la  colonne 3
+    if (displayXO[2] == displayXO[5] &&
+        displayXO[2] == displayXO[8] &&
+        displayXO[2] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[2] + ' a gagné';
+      });
+    }
+    //check de la  diagonal 1
+    if (displayXO[0] == displayXO[4] &&
+        displayXO[0] == displayXO[8] &&
+        displayXO[0] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+      });
+    }
+    //check de la  diagonale 2
+    if (displayXO[6] == displayXO[4] &&
+        displayXO[6] == displayXO[2] &&
+        displayXO[6] != '') {
+      setState(() {
+        resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+      });
+    }
   }
 }
