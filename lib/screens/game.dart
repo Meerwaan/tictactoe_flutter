@@ -21,11 +21,32 @@ class _GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MainColor.bgColor,
-      body: Center(
-          child: Text(
-        'Jeu du Morpion',
-        style: customFontWhite,
-      )),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(children: [
+          Expanded(flex: 1, child: Text('Table des Scores')),
+          Expanded(
+            flex: 3,
+            child: GridView.builder(
+                itemCount: 9,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              width: 3, color: MainColor.borderColor),
+                          color: MainColor.accenColor),
+                    ),
+                  );
+                }),
+          ),
+          Expanded(flex: 2, child: Text('Chrono'))
+        ]),
+      ),
     );
   }
 }
