@@ -16,8 +16,8 @@ class _GameScreenState extends State<GameScreen> {
   int oScore = 0;
   int xScore = 0;
   int filledBoxes = 0;
-
   String resutDec = '';
+  bool winnerFound = false;
 
   static var customFontWhite = GoogleFonts.coiny(
       textStyle: TextStyle(
@@ -118,12 +118,10 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       if (oTurn && displayXO[index] == '') {
         displayXO[index] = 'X';
+        filledBoxes++;
       } else if (!oTurn && displayXO[index] == '') {
         displayXO[index] = 'O';
-      }else if (oTurn && displayXO[index] == 'X') {
-        displayXO[index] = '';
-      } else if (oTurn && displayXO[index] == 'O') {
-        displayXO[index] = '';
+        filledBoxes++;
       }
 
       oTurn = !oTurn;
@@ -205,6 +203,12 @@ class _GameScreenState extends State<GameScreen> {
         _updateScore(displayXO[6]);
       });
     }
+
+    if (!winnerFound && filledBoxes == 9) {
+      setState(() {
+        resutDec = 'Egaliter';
+      });
+    }
   }
 
   void _updateScore(String winner) {
@@ -213,5 +217,6 @@ class _GameScreenState extends State<GameScreen> {
     } else if (winner == 'X') {
       xScore++;
     }
+    winnerFound = true;
   }
 }
