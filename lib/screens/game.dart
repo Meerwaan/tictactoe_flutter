@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Constants/colors.dart';
@@ -12,12 +14,17 @@ class GameScreen extends StatefulWidget {
 class _GameScreenState extends State<GameScreen> {
   bool oTurn = true;
   List<String> displayXO = ["", "", "", "", "", "", "", "", ""];
+  List<int> matchedIndex = [];
 
   int oScore = 0;
   int xScore = 0;
   int filledBoxes = 0;
   String resutDec = '';
   bool winnerFound = false;
+  static const maxTime = 15;
+  int seconds = maxTime;
+  Timer? timer;
+  int attempts = 0;
 
   static var customFontWhite = GoogleFonts.coiny(
       textStyle: TextStyle(
@@ -25,6 +32,24 @@ class _GameScreenState extends State<GameScreen> {
     letterSpacing: 3,
     fontSize: 30,
   ));
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) {
+      setState(() {
+        if (seconds > 0) {
+          seconds--;
+        } else {
+          stopTimer();
+        }
+      });
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
+  }
+
+  void resetTimer() => seconds = maxTime;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +114,9 @@ class _GameScreenState extends State<GameScreen> {
                             borderRadius: BorderRadius.circular(15),
                             border: Border.all(
                                 width: 3, color: MainColor.borderColor),
-                            color: MainColor.accenColor),
+                            color: matchedIndex.contains(index)
+                                ? MainColor.bgColor
+                                : MainColor.accenColor),
                         child: Center(
                           child: Text(
                             displayXO[index],
@@ -105,31 +132,21 @@ class _GameScreenState extends State<GameScreen> {
                   }),
             ),
             Expanded(
-                flex: 2,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        resutDec,
-                        style: customFontWhite,
-                      ),
-                      SizedBox(height: 30),
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: MainColor.accenColor,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 35, vertical: 15)),
-                          onPressed: () {
-                            _clear();
-                          },
-                          child: Text(
-                            'On rejoue ! ?',
-                            style: customFontWhite,
-                          ))
-                    ],
-                  ),
-                ))
+              flex: 2,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      resutDec,
+                      style: customFontWhite,
+                    ),
+                    SizedBox(height: 30),
+                    _buildTimer(),
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -137,27 +154,39 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _Tap(int index) {
-    setState(() {
-      if (oTurn && displayXO[index] == '') {
-        displayXO[index] = 'X';
-        filledBoxes++;
-      } else if (!oTurn && displayXO[index] == '') {
-        displayXO[index] = 'O';
-        filledBoxes++;
-      }
+    final isRunning = timer == null ? false : timer!.isActive;
+    if (isRunning) {
+      setState(() {
+        if (oTurn && displayXO[index] == '') {
+          displayXO[index] = 'X';
+          filledBoxes++;
+        } else if (!oTurn && displayXO[index] == '') {
+          displayXO[index] = 'O';
+          filledBoxes++;
+        }
 
-      oTurn = !oTurn;
-      _checkWin();
-    });
+        oTurn = !oTurn;
+        _checkWin();
+      });
+    }
   }
 
   void _checkWin() {
+    if (filledBoxes == 9 && !winnerFound) {
+      setState(() {
+        resutDec = 'Egaliter';
+        stopTimer();
+      });
+    }
+
     //check de la  ligne 1
     if (displayXO[0] == displayXO[1] &&
         displayXO[0] == displayXO[2] &&
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        matchedIndex.addAll([0, 1, 2]);
+        stopTimer();
         _updateScore(displayXO[0]);
       });
     }
@@ -167,6 +196,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[3] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[3] + ' a gagné';
+        matchedIndex.addAll([3, 4, 5]);
+        stopTimer();
         _updateScore(displayXO[3]);
       });
     }
@@ -177,6 +208,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[6] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+        matchedIndex.addAll([6, 7, 8]);
+        stopTimer();
         _updateScore(displayXO[6]);
       });
     }
@@ -186,6 +219,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        matchedIndex.addAll([0, 3, 6]);
+        stopTimer();
         _updateScore(displayXO[0]);
       });
     }
@@ -195,6 +230,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[1] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[1] + ' a gagné';
+        matchedIndex.addAll([1, 4, 7]);
+        stopTimer();
         _updateScore(displayXO[1]);
       });
     }
@@ -204,6 +241,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[2] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[2] + ' a gagné';
+        matchedIndex.addAll([2, 5, 8]);
+        stopTimer();
         _updateScore(displayXO[2]);
       });
     }
@@ -213,6 +252,8 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        matchedIndex.addAll([0, 4, 8]);
+        stopTimer();
         _updateScore(displayXO[0]);
       });
     }
@@ -222,13 +263,9 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[6] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+        matchedIndex.addAll([6, 4, 2]);
+        stopTimer();
         _updateScore(displayXO[6]);
-      });
-    }
-
-    if (!winnerFound && filledBoxes == 9) {
-      setState(() {
-        resutDec = 'Egaliter';
       });
     }
   }
@@ -248,8 +285,52 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[i] = '';
       }
       resutDec = '';
+      matchedIndex = [];
+      filledBoxes = 0;
     });
 
-    filledBoxes = 0;
+    
+  }
+
+  Widget _buildTimer() {
+    final isRunning = timer == null ? false : timer!.isActive;
+
+    return isRunning
+        ? SizedBox(
+            height: 100,
+            width: 100,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                CircularProgressIndicator(
+                  value: 1 - seconds / maxTime,
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  strokeWidth: 8,
+                  backgroundColor: MainColor.accenColor,
+                ),
+                Center(
+                  child: Text(
+                    '$seconds',
+                    style: customFontWhite,
+                  ),
+                )
+              ],
+            ),
+          )
+        : ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: MainColor.accenColor,
+                padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15)),
+            onPressed: () {
+              resetTimer();
+              startTimer();
+              _clear();
+              attempts++;
+            },
+            child: Text(
+              attempts == 0 ? 'On joue ?' : 'On rejoue ?',
+              style: customFontWhite,
+            ),
+          );
   }
 }
