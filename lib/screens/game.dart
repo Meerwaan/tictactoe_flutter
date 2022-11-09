@@ -13,6 +13,10 @@ class _GameScreenState extends State<GameScreen> {
   bool oTurn = true;
   List<String> displayXO = ["", "", "", "", "", "", "", "", ""];
 
+  int oScore = 0;
+  int xScore = 0;
+  int filledBoxes = 0;
+
   String resutDec = '';
 
   static var customFontWhite = GoogleFonts.coiny(
@@ -29,7 +33,45 @@ class _GameScreenState extends State<GameScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(children: [
-          Expanded(flex: 1, child: Text('Table des Scores')),
+          Expanded(
+            flex: 1,
+            child: Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Joueur X',
+                        style: customFontWhite,
+                      ),
+                      Text(
+                        xScore.toString(),
+                        style: customFontWhite,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    width: 50,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Joueur O',
+                        style: customFontWhite,
+                      ),
+                      Text(
+                        oScore.toString(),
+                        style: customFontWhite,
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
           Expanded(
             flex: 3,
             child: GridView.builder(
@@ -61,7 +103,12 @@ class _GameScreenState extends State<GameScreen> {
                   );
                 }),
           ),
-          Expanded(flex: 2, child: Text(resutDec, style: customFontWhite,))
+          Expanded(
+              flex: 2,
+              child: Text(
+                resutDec,
+                style: customFontWhite,
+              ))
         ]),
       ),
     );
@@ -70,9 +117,13 @@ class _GameScreenState extends State<GameScreen> {
   void _Tap(int index) {
     setState(() {
       if (oTurn && displayXO[index] == '') {
-        displayXO[index] = 'O';
-      } else if (!oTurn && displayXO[index] == '') {
         displayXO[index] = 'X';
+      } else if (!oTurn && displayXO[index] == '') {
+        displayXO[index] = 'O';
+      }else if (oTurn && displayXO[index] == 'X') {
+        displayXO[index] = '';
+      } else if (oTurn && displayXO[index] == 'O') {
+        displayXO[index] = '';
       }
 
       oTurn = !oTurn;
@@ -87,6 +138,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        _updateScore(displayXO[0]);
       });
     }
     //check de la  ligne 2
@@ -95,15 +147,17 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[3] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[3] + ' a gagné';
+        _updateScore(displayXO[3]);
       });
     }
-  
+
     //check de la  ligne 3
     if (displayXO[6] == displayXO[7] &&
         displayXO[6] == displayXO[8] &&
         displayXO[6] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+        _updateScore(displayXO[6]);
       });
     }
     //check de la  colonne 1
@@ -112,6 +166,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        _updateScore(displayXO[0]);
       });
     }
     //check de la  colonne 2
@@ -120,6 +175,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[1] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[1] + ' a gagné';
+        _updateScore(displayXO[1]);
       });
     }
     //check de la  colonne 3
@@ -128,6 +184,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[2] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[2] + ' a gagné';
+        _updateScore(displayXO[2]);
       });
     }
     //check de la  diagonal 1
@@ -136,6 +193,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[0] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[0] + ' a gagné';
+        _updateScore(displayXO[0]);
       });
     }
     //check de la  diagonale 2
@@ -144,7 +202,16 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[6] != '') {
       setState(() {
         resutDec = 'Joueur ' + displayXO[6] + ' a gagné';
+        _updateScore(displayXO[6]);
       });
+    }
+  }
+
+  void _updateScore(String winner) {
+    if (winner == 'O') {
+      oScore++;
+    } else if (winner == 'X') {
+      xScore++;
     }
   }
 }
