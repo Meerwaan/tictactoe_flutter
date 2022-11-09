@@ -32,84 +32,106 @@ class _GameScreenState extends State<GameScreen> {
       backgroundColor: MainColor.bgColor,
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(children: [
-          Expanded(
-            flex: 1,
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Joueur X',
-                        style: customFontWhite,
-                      ),
-                      Text(
-                        xScore.toString(),
-                        style: customFontWhite,
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Joueur O',
-                        style: customFontWhite,
-                      ),
-                      Text(
-                        oScore.toString(),
-                        style: customFontWhite,
-                      )
-                    ],
-                  )
-                ],
+        child: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Joueur X',
+                          style: customFontWhite,
+                        ),
+                        Text(
+                          xScore.toString(),
+                          style: customFontWhite,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Joueur O',
+                          style: customFontWhite,
+                        ),
+                        Text(
+                          oScore.toString(),
+                          style: customFontWhite,
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: GridView.builder(
-                itemCount: 9,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onTap: () {
-                      _Tap(index);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              width: 3, color: MainColor.borderColor),
-                          color: MainColor.accenColor),
-                      child: Center(
-                        child: Text(
-                          displayXO[index],
-                          style: GoogleFonts.dmSans(
-                              textStyle: TextStyle(
-                            fontSize: 96,
-                            color: MainColor.fontColor,
-                          )),
+            Expanded(
+              flex: 3,
+              child: GridView.builder(
+                  itemCount: 9,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        _Tap(index);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                                width: 3, color: MainColor.borderColor),
+                            color: MainColor.accenColor),
+                        child: Center(
+                          child: Text(
+                            displayXO[index],
+                            style: GoogleFonts.dmSans(
+                                textStyle: TextStyle(
+                              fontSize: 96,
+                              color: MainColor.fontColor,
+                            )),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }),
-          ),
-          Expanded(
-              flex: 2,
-              child: Text(
-                resutDec,
-                style: customFontWhite,
-              ))
-        ]),
+                    );
+                  }),
+            ),
+            Expanded(
+                flex: 2,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        resutDec,
+                        style: customFontWhite,
+                      ),
+                      SizedBox(height: 30),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: MainColor.accenColor,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 35, vertical: 15)),
+                          onPressed: () {
+                            _clear();
+                          },
+                          child: Text(
+                            'On rejoue ! ?',
+                            style: customFontWhite,
+                          ))
+                    ],
+                  ),
+                ))
+          ],
+        ),
       ),
     );
   }
@@ -218,5 +240,16 @@ class _GameScreenState extends State<GameScreen> {
       xScore++;
     }
     winnerFound = true;
+  }
+
+  void _clear() {
+    setState(() {
+      for (int i = 0; i < 9; i++) {
+        displayXO[i] = '';
+      }
+      resutDec = '';
+    });
+
+    filledBoxes = 0;
   }
 }
