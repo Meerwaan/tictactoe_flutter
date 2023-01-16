@@ -21,7 +21,7 @@ class _GameScreenState extends State<GameScreen> {
   int filledBoxes = 0;
   String resutDec = '';
   bool winnerFound = false;
-  static const maxTime = 20;
+  static const maxTime = 15;
   int seconds = maxTime;
   Timer? timer;
   int attempts = 0;
